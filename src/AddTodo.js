@@ -3,9 +3,10 @@ import React from 'react';
 import { css, jsx } from '@emotion/core';
 
 const input = css`
-  width: 30%;
+  width: 100%;
   align-self: center;
-  padding: 15px 10px;
+  padding: 15px 10px 15px 10px;
+
   margin: 0px;
   box-sizing: border-box;
   box-shadow: aqua;
