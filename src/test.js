@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import { useState, Fragment } from 'react';
-import Form from './Form';
+import { useState } from 'react';
+import AddTodo from './Form';
 
 /****************CSS Styling***********************/
 
@@ -15,11 +15,9 @@ const heading = css`
   letter-spacing: 1px;
   h1 {
     font-size: 4em;
-    margin: 0px;
   }
   h3 {
     font-size: 2em;
-    margin: 0px;
   }
 `;
 const inputSection = css`
@@ -63,22 +61,6 @@ const buttonright = css`
   justify-items: right;
   margin: 5px;
 `;
-const buttonDown = css`
-  border-radius: 50%;
-  background-color: tomato;
-  border: none;
-  color: white;
-  padding: 30px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  &:hover {
-    background-color: darkblue;
-    color: white;
-  }
-`;
 
 const todoList = css`
   cursor: pointer;
@@ -91,24 +73,23 @@ const todoList = css`
   margin: 10px;
   justify-content: space-between;
 `;
-const footer = css`
-  color: #777;
-  height: 20px;
-  margin-top: 20px;
-  text-align: center;
-  border-top: 1px solid #e6e6e6;
-  display: flex;
-  justify-content: space-between;
-  width: 500px;
-`;
 /****************** Main App ********************/
 function App() {
-  const [todoItems, setTodoItems] = useState([]);
+  const [todoItems, setTodoItems] = useState([
+    { text: 'Your todo comes here', isDone: false },
+    { text: 'you can check done/remove and filter', isDone: false },
+    { text: 'have fun!!', isDone: false },
+  ]);
 
+  const [newItem, setNewItem] = useState('');
   const [checkClick, setCheckClick] = useState('Done');
 
-  // Delete the task
+  const addTodo = (text) => {
+    const newTodos = [...todoItems, { text: text, isDone: false }];
 
+    setTodoItems(newTodos);
+  };
+  // Delete the task
   const deleteTodo = (index) => {
     const newTodos = [...todoItems];
     newTodos.splice(index, 1);
@@ -123,11 +104,6 @@ function App() {
     setTodoItems(newTodos);
     setCheckClick(newClick);
   };
-  // add item
-  const addTodo = (text) => {
-    const newTodos = [...todoItems, { text: text, isDone: false }];
-    setTodoItems(newTodos);
-  };
 
   /******************Return ********************/
 
@@ -138,12 +114,18 @@ function App() {
         <h3>you can add your new task here</h3>
       </header>
       <div css={inputSection}>
-        <Form
-          onSubmit={function onSubmit(newItem) {
+        <AddTodo newItem={newItem} setNewItem={setNewItem}></AddTodo>
+        <button
+          css={button}
+          type="submit"
+          onClick={() => {
             addTodo(newItem);
-            alert('Added');
+
+            setNewItem('');
           }}
-        ></Form>
+        >
+          Submit
+        </button>
 
         <div>
           <div>
@@ -161,6 +143,7 @@ function App() {
                     onClick={() => {
                       checkTodo(index);
                       alert('AWESOME JOB!');
+                      setNewItem('');
                     }}
                   >
                     {checkClick}
@@ -173,6 +156,7 @@ function App() {
                     onClick={() => {
                       deleteTodo(index);
                       alert('Are you sure you want to delete?');
+                      setNewItem('');
                     }}
                   >
                     Delete
@@ -181,14 +165,8 @@ function App() {
               );
             })}
           </div>
+          <div>filtering comes here</div>
         </div>
-        <footer>
-          <ul css={footer}>
-            <div css={buttonDown}>delete all</div>
-            <div css={buttonDown}>open</div>
-            <div css={buttonDown}>Done</div>
-          </ul>
-        </footer>
       </div>
     </div>
   );
