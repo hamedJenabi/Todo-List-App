@@ -7,16 +7,19 @@ const input = css`
   padding: 15px 10px 15px 10px;
   margin: 0px;
   box-sizing: border-box;
-  box-shadow: aqua;
+  border-radius: 3px;
+  box-shadow: red;
 `;
 const button = css`
-  background-color: #4caf50; /* Green */
+  background-color: blue;
   color: white;
+  border-radius: 8px;
+
   padding: 15px 32px;
   font-size: 16px;
   margin-top: 20px;
   &:hover {
-    background-color: red;
+    background-color: darkblue;
     color: white;
   }
 `;

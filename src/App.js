@@ -1,10 +1,16 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
 import Form from './Form';
 
-/****************CSS Styling***********************/
+/**************** CSS Styling ***********************/
 
+const main = css`
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+
+  margin: 0px;
+`;
 const heading = css`
   font-family: 'Open Sans', sans-serif;
   font-style: normal;
@@ -38,11 +44,15 @@ const button = css`
   display: inline-block;
   font-size: 16px;
   margin-top: 20px;
+  &:hover {
+    background-color: darkblue;
+    color: white;
+  }
 `;
 const buttonleft = css`
   background-color: #4caf50; /* Green */
   color: white;
-  padding: 10px;
+  padding: 10px 50px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -53,6 +63,11 @@ const buttonleft = css`
   justify-content: left;
   align-items: left;
   margin-right: 10px;
+  border-radius: 8px;
+  &:hover {
+    background-color: darkblue;
+    color: white;
+  }
 `;
 const buttonright = css`
   background-color: tomato; /* Green */
@@ -62,17 +77,24 @@ const buttonright = css`
   border-radius: 8px;
   justify-items: right;
   margin: 5px;
+  &:hover {
+    background-color: darkblue;
+    color: white;
+  }
 `;
 const buttonDown = css`
-  border-radius: 50%;
-  background-color: tomato;
+  border-radius: 5%;
+  background-color: blue;
   border: none;
   color: white;
-  padding: 30px;
+  padding: 10px 20px 10px 20px;
+
+  align-self: center;
   text-align: center;
   text-decoration: none;
   font-size: 16px;
-  margin: 4px 2px;
+  margin-top: 35px;
+
   cursor: pointer;
   &:hover {
     background-color: darkblue;
@@ -89,24 +111,25 @@ const todoList = css`
   font-size: 1.6em;
   display: flex;
   margin: 10px;
+  border-radius: 8px;
   justify-content: space-between;
 `;
 const footer = css`
   color: #777;
   height: 20px;
   margin-top: 20px;
+
   text-align: center;
   border-top: 1px solid #e6e6e6;
   display: flex;
   justify-content: space-between;
   width: 500px;
 `;
+
 /****************** Main App ********************/
 function App() {
   const [todoItems, setTodoItems] = useState([]);
-
-  const [checkClick, setCheckClick] = useState('Done');
-
+  const [display, setDisplay] = useState(0);
   // Delete the task
 
   const deleteTodo = (index) => {
@@ -115,14 +138,33 @@ function App() {
 
     setTodoItems(newTodos);
   };
-  // Done the task
+
+  const deleteDone = () => {
+    const onlyComplete = todoItems.filter((done) => {
+      return done.isDone === false;
+    });
+    setTodoItems(onlyComplete);
+  };
+  const hideClosed = () => {
+    // const onlyIncomplete = todoItems.filter((notDone) => {
+    //   return notDone.isDone === false;
+    // });
+    setDisplay(display === 0 ? 1 : 0);
+  };
+
+  const deleteAll = () => {
+    const newTodos = [...todoItems];
+    newTodos.splice(0);
+    setTodoItems(newTodos);
+  };
+
+  // Done tasks
   const checkTodo = (index) => {
     let newTodos = [...todoItems];
     newTodos[index].isDone = !todoItems[index].isDone;
-    let newClick = newTodos[index].isDone ? 'Reopen!' : 'Done';
     setTodoItems(newTodos);
-    setCheckClick(newClick);
   };
+
   // add item
   const addTodo = (text) => {
     const newTodos = [...todoItems, { text: text, isDone: false }];
@@ -132,16 +174,14 @@ function App() {
   /******************Return ********************/
 
   return (
-    <div>
+    <div css={main}>
       <header css={heading}>
-        <h1>Hamed's todos-App</h1>
-        <h3>you can add your new task here</h3>
+        <h1>Hamed's to-do App</h1>
       </header>
       <div css={inputSection}>
         <Form
           onSubmit={function onSubmit(newItem) {
             addTodo(newItem);
-            alert('Added');
           }}
         ></Form>
 
@@ -149,44 +189,76 @@ function App() {
           <div>
             {todoItems.map(function mapping(item, index) {
               return (
-                <section
+                <ul
                   value={index}
                   css={css`
                     ${todoList};
-                    background-color: ${todoItems[index].isDone ? 'red' : ''};
+                    background-color: ${todoItems[index].isDone
+                      ? '#4caf50; /* Green */d'
+                      : ''};
+
+                    display: ${display === 1 && todoItems[index].isDone
+                      ? 'none'
+                      : 'block'};
                   `}
                 >
                   <button
                     css={buttonleft}
                     onClick={() => {
                       checkTodo(index);
-                      alert('AWESOME JOB!');
                     }}
                   >
-                    {checkClick}
+                    {todoItems[index].isDone ? 'Reopen!' : 'Done'}
                   </button>
-                  {console.log(index)}
-
                   {item.text}
                   <button
                     css={buttonright}
                     onClick={() => {
                       deleteTodo(index);
-                      alert('Are you sure you want to delete?');
+                      alert('Your task will be deleted.');
                     }}
                   >
                     Delete
                   </button>
-                </section>
+                </ul>
               );
             })}
           </div>
         </div>
         <footer>
           <ul css={footer}>
-            <div css={buttonDown}>delete all</div>
-            <div css={buttonDown}>open</div>
-            <div css={buttonDown}>Done</div>
+            <div
+              css={css`
+                ${buttonDown};
+                justify-items: left;
+              `}
+              onClick={() => {
+                alert('Your tasks will be deleted.');
+
+                deleteAll();
+              }}
+            >
+              delete all
+            </div>
+            <div
+              css={buttonDown}
+              onClick={() => {
+                alert('Your closed tasks will be deleted.');
+
+                deleteDone();
+              }}
+            >
+              delete closed tasks
+            </div>
+            <div
+              css={buttonDown}
+              onClick={() => {
+                hideClosed();
+              }}
+            >
+              {' '}
+              {display === 0 ? 'Hide' : 'Show'} closed tasks
+            </div>
           </ul>
         </footer>
       </div>
