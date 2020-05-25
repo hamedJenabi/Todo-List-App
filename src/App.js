@@ -33,7 +33,10 @@ const heading = css`
   color: rgba(175, 47, 47, 0.15);
   h1 {
     font-size: 4em;
+    font-weight: 100;
+
     margin: 0px;
+    color: black;
   }
   h3 {
     font-size: 2em;
@@ -57,39 +60,39 @@ const button = css`
   font-size: 16px;
   margin-top: 20px;
   &:hover {
-    transition: 0.2s;
+    transition: 0.3s;
 
     background-color: darkblue;
     color: white;
   }
   //
 `;
-// const buttonleft = css`
-//   padding: 10px;
-//   background: none;
-//   font-size: 14px;
-//   border-radius: 8px;
-//   justify-items: right;
-//   &:hover {
-//     transition: 0.2s;
-
-//     border-color: rgba(175, 47, 47, 0.1);
-//     box-shadow: 0px 2px 2px grey;
-//   }
-// `;
+const buttonleft = css`
+  padding: 10px;
+  background: none;
+  font-size: 14px;
+  border-radius: 8px;
+  justify-items: right;
+  &:hover {
+    transition: 0.3s;
+    background-color: lightgray;
+    border-color: rgba(175, 47, 47, 0.1);
+    box-shadow: 0px 2px 2px grey;
+  }
+`;
 const buttonright = css`
-  background-color: red;
+  background-color: #eee;
   color: white;
   padding: 10px;
   font-size: 14px;
   border-radius: 8px;
   justify-items: right;
   &:hover {
-    transition: 0.2s;
+    transition: 0.3s;
 
-    background-color: darkred;
+    background-color: lightgray;
     border-color: rgba(175, 47, 47, 0.1);
-    box-shadow: 0px 2px 2px darkred;
+    box-shadow: 0px 2px 2px lightgray;
 
     color: white;
   }
@@ -110,8 +113,7 @@ const buttonDown = css`
   border-radius: 3px;
   cursor: pointer;
   &:hover {
-    transition: 0.2s;
-
+    transition: 0.3s;
     border-color: rgba(175, 47, 47, 0.1);
     box-shadow: 0px 1px 1px grey;
   }
@@ -127,9 +129,11 @@ const todoList = css`
   border-radius: 8px;
   justify-content: space-between;
   align-items: center;
+  margin-top: 13px;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 10px 20px 0 rgba(0, 0, 0, 0.1);
+
   &:hover {
-    transition: 0.2s;
+    transition: 0.3s;
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.1), 0 10px 20px 0 rgba(0, 0, 0, 0.1);
   }
 `;
@@ -137,6 +141,7 @@ const footer = css`
   color: #778;
   height: 20px;
   margin-top: 40px;
+
   text-align: center;
   border-top: 1px solid #e6e6e6;
   display: flex;
@@ -149,7 +154,7 @@ const footer = css`
 /****************** Main App ********************/
 function App() {
   const [todoItems, setTodoItems] = useState([]);
-  const [display, setDisplay] = useState(0);
+  const [filter, setFilter] = useState('0');
 
   // Delete the task
 
@@ -166,11 +171,12 @@ function App() {
     });
     setTodoItems(onlyComplete);
   };
-  const hideClosed = () => {
-    // const onlyIncomplete = todoItems.filter((notDone) => {
-    //   return notDone.isDone === false;
-    // });
-    setDisplay(display === 0 ? 1 : 0);
+  const filterCompleted = () => {
+    setFilter(filter === 'hideCompleted' ? 'showCompleted' : 'hideCompleted');
+  };
+  ////////////
+  const filterUnCompleted = () => {
+    setFilter(filter === 'hideActive' ? 'showActive' : 'hideActive');
   };
 
   const deleteAll = () => {
@@ -185,9 +191,8 @@ function App() {
     newTodos[index].isDone = !todoItems[index].isDone;
     setTodoItems(newTodos);
   };
-  // const onChangeItem = (event) => {
-  //   setNewItem(event.target.value);
-  // };
+
+  // showing items left
   const completeLenght = () => {
     const lenght = todoItems.filter((done) => {
       return done.isDone === false;
@@ -195,17 +200,7 @@ function App() {
 
     return lenght.length;
   };
-  // const handeChange = (index) => {
-  //   // setTodoItems({
-  //   //   ...todoItems.isDone,
-  //   //   [event.target.index]: !event.target.index,
-  //   // });
-  //   let newTodos = [...todoItems];
-  //   newTodos[index].isDone = !todoItems[index].isDone;
-  //   setTodoItems(newTodos);
 
-  //   console.log(todoItems.isDone);
-  // };
   // add item
   const addTodo = (text) => {
     const newTodos = [...todoItems, { text: text, isDone: false }];
@@ -230,7 +225,7 @@ function App() {
           <div>
             {todoItems.map(function mapping(item, index) {
               return (
-                <ul
+                <div
                   value={index}
                   css={css`
                     ${todoList};
@@ -238,25 +233,22 @@ function App() {
                       ? '#4caf50; /* Green */d'
                       : ''};
 
-                    display: ${display === 1 && todoItems[index].isDone
+                    display: ${(filter === 'hideCompleted' &&
+                      todoItems[index].isDone) ||
+                    (filter === 'hideActive' && !todoItems[index].isDone)
                       ? 'none'
                       : 'flex'};
                   `}
                 >
-                  {/* <button
+                  <button
                     css={buttonleft}
                     onClick={() => {
                       checkTodo(index);
                     }}
                   >
-                    {todoItems[index].isDone ? 'Undone' : 'Done'}
-                  </button> */}
-                  <input
-                    type="checkbox"
-                    onClick={() => {
-                      checkTodo(index);
-                    }}
-                  ></input>
+                    {todoItems[index].isDone ? 'Reopen' : '✔️'}
+                  </button>
+
                   <p>{item.text}</p>
                   <button
                     css={buttonright}
@@ -265,15 +257,15 @@ function App() {
                       alert('Your task will be deleted.');
                     }}
                   >
-                    Delete
+                    {'❌'}
                   </button>
-                </ul>
+                </div>
               );
             })}
           </div>
         </div>
         <footer>
-          <ul css={footer}>
+          <div css={footer}>
             <div
               css={css`
                 margin-top: 30px;
@@ -284,8 +276,6 @@ function App() {
             <div
               css={buttonDown}
               onClick={() => {
-                alert('Your closed tasks will be deleted.');
-
                 deleteDone();
               }}
             >
@@ -294,12 +284,21 @@ function App() {
             <div
               css={buttonDown}
               onClick={() => {
-                hideClosed();
+                filterCompleted();
               }}
             >
               {' '}
-              {display === 0 ? 'Hide' : 'Show'} completed tasks
+              {filter === 'hideCompleted' ? 'Show All' : 'Open Tasks'}
             </div>
+            <div
+              css={buttonDown}
+              onClick={() => {
+                filterUnCompleted();
+              }}
+            >
+              {filter === 'hideActive' ? 'Show All' : 'Completed Tasks'}
+            </div>
+
             <div
               css={css`
                 ${buttonDown};
@@ -313,7 +312,7 @@ function App() {
             >
               Delete all tasks
             </div>
-          </ul>
+          </div>
         </footer>
       </div>
     </div>
