@@ -2,6 +2,9 @@ import { useState } from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ******** styling ********** //
+
 const formStyle = css`
   justify-content: space-between;
   padding: 2px;
@@ -33,20 +36,10 @@ const button = css`
     border-color: rgba(175, 47, 47, 0.1);
     box-shadow: 0px 2px 2px grey;
   }
-  /* background-color: blue;
-  color: white;
-  border-radius: 8px;
-
-  padding: 15px 32px;
-  font-size: 16px;
-  &:hover {
-    transition: 0.2s;
-    background-color: darkblue;
-    color: white;
-  } */
+  
 `;
 
-/**********************Function **/
+/*******************Function ***********/
 
 function AddTodo(props) {
   const [newItem, setNewItem] = useState('');

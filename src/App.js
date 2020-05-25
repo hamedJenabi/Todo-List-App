@@ -152,11 +152,27 @@ const footer = css`
 `;
 
 /****************** Main App ********************/
+
 function App() {
   const [todoItems, setTodoItems] = useState([]);
   const [filter, setFilter] = useState('0');
 
-  // Delete the task
+  /********* adding tasks **************/
+
+  const addTodo = (text) => {
+    const newTodos = [...todoItems, { text: text, isDone: false }];
+    setTodoItems(newTodos);
+  };
+
+  /****** toggle active to complete and back of a task ***********/
+
+  const checkTodo = (index) => {
+    let newTodos = [...todoItems];
+    newTodos[index].isDone = !todoItems[index].isDone;
+    setTodoItems(newTodos);
+  };
+
+  /****** delete a task ***********/
 
   const deleteTodo = (index) => {
     const newTodos = [...todoItems];
@@ -164,47 +180,40 @@ function App() {
 
     setTodoItems(newTodos);
   };
+  /********* delete completed tasks**************/
 
-  const deleteDone = () => {
+  const deleteCompleted = () => {
     const onlyComplete = todoItems.filter((done) => {
       return done.isDone === false;
     });
     setTodoItems(onlyComplete);
   };
+  /********* show only completed tasks**************/
+
   const filterCompleted = () => {
     setFilter(filter === 'hideCompleted' ? 'showCompleted' : 'hideCompleted');
   };
-  ////////////
+
+  /********* show only open  tasks **************/
+
   const filterUnCompleted = () => {
     setFilter(filter === 'hideActive' ? 'showActive' : 'hideActive');
   };
+
+  /********* delete All **************/
 
   const deleteAll = () => {
     const newTodos = [...todoItems];
     newTodos.splice(0);
     setTodoItems(newTodos);
   };
-
-  // Done tasks
-  const checkTodo = (index) => {
-    let newTodos = [...todoItems];
-    newTodos[index].isDone = !todoItems[index].isDone;
-    setTodoItems(newTodos);
-  };
-
-  // showing items left
+  /********* showing amount of active tasks  **************/
   const completeLenght = () => {
     const lenght = todoItems.filter((done) => {
       return done.isDone === false;
     });
 
     return lenght.length;
-  };
-
-  // add item
-  const addTodo = (text) => {
-    const newTodos = [...todoItems, { text: text, isDone: false }];
-    setTodoItems(newTodos);
   };
 
   /******************Return ********************/
@@ -276,7 +285,7 @@ function App() {
             <div
               css={buttonDown}
               onClick={() => {
-                deleteDone();
+                deleteCompleted();
               }}
             >
               Delete completed tasks
